@@ -1,0 +1,30 @@
+/*
+ * Peripheral wrapper around the layout editor's generated keymap.
+ *
+ * The left half's board defines an `underglow-indicators` node, and
+ * app/src/rgb_underglow.c compiles its status-display code whenever that node
+ * exists - including calls to zmk_endpoints_selected(), zmk_keymap_layer_active(),
+ * zmk_hid_indicators_get_current_profile() and zmk_ble_profile_status(). All of
+ * those live in source files ZMK only compiles for a central (see the
+ * `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)` block in
+ * app/CMakeLists.txt), so a left half built as a peripheral fails to link.
+ *
+ * Deleting the node drops that code and leaves the rest of the underglow alone.
+ * The indicators could not work anyway: layer, endpoint and BLE profile state
+ * all live on the dongle now.
+ *
+ * The right half has no such node, and deleting a node by name that isn't there
+ * is a no-op, so both halves can share this file.
+ *
+ * Regenerating glove80.keymap from the layout editor does not disturb any of this.
+ */
+
+#include "glove80.keymap"
+
+/ {
+    chosen {
+        /delete-property/ zmk,underglow-indicators;
+    };
+
+    /delete-node/ underglow-indicators;
+};

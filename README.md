@@ -10,6 +10,20 @@ These steps will get you using your keymap on your keyboard in the fastest time 
 
 If you are looking to dig deeper into ZMK and develop new functionality, it is recommended to follow the steps of installing ZMK as found on the official ZMK documentation site (linked below).
 
+
+> **This fork builds peripheral-only firmware for a ZMK dongle.**
+>
+> `config/glove80.conf` sets `CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n`, so both halves become split
+> peripherals and a dongle acts as the central. The resulting `glove80-peripheral.uf2` will
+> **not** work as a standalone keyboard - keep a normal build around if you ever want to go
+> back. See the `glove80-zmk-shield-module` repo for the dongle side and the flashing runbook.
+>
+> `config/default.nix` builds `config/peripheral.keymap`, a thin wrapper that includes
+> `config/glove80.keymap` and deletes the left half's `underglow-indicators` node (it pulls in
+> central-only code that will not link on a peripheral). Re-export `config/glove80.keymap`
+> from the layout editor as often as you like; the wrapper is untouched by that.
+
+
 ## Resources
 - The [official MoErgo Glove80 Support](https://moergo.com/glove80-support) web site. Glove80 documentation and other technical resources.
 - The [official MoErgo Discord Server](https://moergo.com/discord). Instant conversations with other Glove80 users.
